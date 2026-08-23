@@ -1,5 +1,6 @@
 # Mini Todo API
-> Status: Main branch version
+
+> Status: Merged from both main and feature branches
 
 A deliberately tiny FastAPI project used to practice a full industry
 git-to-deployment workflow: branching, PRs, CI, security practices, and CD.
