@@ -38,7 +38,7 @@ jobs:
 
       - name: Dependency security scan
         run: |
-          python -m pip install --upgrade setuptools
+          python -m pip install --upgrade setuptools pip-audit
           pip-audit
 
       - name: Lint with flake8
