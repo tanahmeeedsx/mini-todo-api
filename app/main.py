@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
@@ -10,6 +12,11 @@ class Todo(BaseModel):
     done: bool = False
 
 
+class TodoUpdate(BaseModel):
+    title: Optional[str] = None
+    done: Optional[bool] = None
+
+
 # In-memory database — resets every restart
 todos: list[Todo] = []
 next_id = 1
@@ -17,7 +24,11 @@ next_id = 1
 
 @app.get("/")
 def root():
-    return {"message": "Mini Todo API is running"}
+    return {
+        "message": "Mini Todo API is running",
+        "docs": "/docs",
+        "deployment": "automated"
+    }
 
 
 @app.get("/health")
@@ -37,7 +48,7 @@ def add_todo(title: str, done: bool = False):
     todo = Todo(
         id=next_id,
         title=title,
-        done=done,
+        done=done
     )
 
     todos.append(todo)
@@ -52,42 +63,29 @@ def get_todo(todo_id: int):
         if todo.id == todo_id:
             return todo
 
-    raise HTTPException(
-        status_code=404,
-        detail="Todo not found",
-    )
+    raise HTTPException(status_code=404, detail="Todo not found")
 
 
 @app.put("/todos/{todo_id}")
-def update_todo(
-    todo_id: int,
-    title: str | None = None,
-    done: bool | None = None,
-):
+def update_todo(todo_id: int, update: TodoUpdate):
     for todo in todos:
         if todo.id == todo_id:
-            if title is not None:
-                todo.title = title
+            if update.title is not None:
+                todo.title = update.title
 
-            if done is not None:
-                todo.done = done
+            if update.done is not None:
+                todo.done = update.done
 
             return todo
 
-    raise HTTPException(
-        status_code=404,
-        detail="Todo not found",
-    )
+    raise HTTPException(status_code=404, detail="Todo not found")
 
 
 @app.delete("/todos/{todo_id}")
 def delete_todo(todo_id: int):
-    for index, todo in enumerate(todos):
+    for todo in todos:
         if todo.id == todo_id:
-            deleted_todo = todos.pop(index)
-            return deleted_todo
+            todos.remove(todo)
+            return {"message": "Todo deleted successfully"}
 
-    raise HTTPException(
-        status_code=404,
-        detail="Todo not found",
-    )
+    raise HTTPException(status_code=404, detail="Todo not found")
