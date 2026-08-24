@@ -19,6 +19,9 @@ next_id = 1
 def root():
     return {"message": "Mini Todo API is running"}
 
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
 
 @app.get("/todos")
 def get_todos():
