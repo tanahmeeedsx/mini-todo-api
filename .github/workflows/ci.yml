@@ -2,9 +2,12 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - feature/**
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build-and-test:
@@ -17,7 +20,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
@@ -25,10 +28,14 @@ jobs:
           pip install -r requirements.txt
           pip install flake8 pytest
 
-      - name: Lint with flake8
+      - name: Run flake8
         run: |
           flake8 app/ --count --show-source --statistics
 
       - name: Run tests
         run: |
-          pytest
+          PYTHONPATH=. pytest
+
+      - name: Build check
+        run: |
+          python -m compileall app
