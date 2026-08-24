@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 
@@ -40,25 +40,11 @@ def add_todo(title: str, done: bool = False):
     return todo
 
 
-@app.put("/todos/{todo_id}")
-def update_todo(
-    todo_id: int,
-    title: str | None = None,
-    done: bool | None = None,
-):
-    for todo in todos:
-        if todo.id == todo_id:
-            if title is not None:
-                todo.title = title
-            if done is not None:
-                todo.done = done
-            return todo
-    return {"error": "Todo not found"}
-
-
 @app.delete("/todos/{todo_id}")
 def delete_todo(todo_id: int):
-    for i, todo in enumerate(todos):
+    for todo in todos:
         if todo.id == todo_id:
-            return todos.pop(i)
-    return {"error": "Todo not found"}
+            todos.remove(todo)
+            return {"message": "Todo deleted"}
+
+    raise HTTPException(status_code=404, detail="Todo not found")
