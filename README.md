@@ -24,3 +24,4 @@ pytest
 - [ ] Phase 4: Security practices (secrets, Dependabot, CODEOWNERS)
 - [ ] Phase 5: CD to Render
 WIP: working on something urgent
+Feature A notes
