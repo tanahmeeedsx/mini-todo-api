@@ -36,9 +36,9 @@ jobs:
             exit 1
           fi
 
-      - name: Security audit
+      - name: Dependency security scan
         run: |
-          pip install pip-audit
+          python -m pip install --upgrade setuptools
           pip-audit
 
       - name: Lint with flake8
