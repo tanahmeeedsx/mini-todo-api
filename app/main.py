@@ -10,7 +10,7 @@ class Todo(BaseModel):
     done: bool = False
 
 
-# in-memory "database" — simple list, resets every restart
+# In-memory "database" — simple list, resets every restart
 todos: list[Todo] = []
 next_id = 1
 
@@ -19,9 +19,11 @@ next_id = 1
 def root():
     return {"message": "Mini Todo API is running"}
 
+
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
+
 
 @app.get("/todos")
 def get_todos():
@@ -38,7 +40,11 @@ def add_todo(title: str, done: bool = False):
 
 
 @app.put("/todos/{todo_id}")
-def update_todo(todo_id: int, title: str | None = None, done: bool | None = None):
+def update_todo(
+    todo_id: int,
+    title: str | None = None,
+    done: bool | None = None,
+):
     for todo in todos:
         if todo.id == todo_id:
             if title is not None:
@@ -46,12 +52,5 @@ def update_todo(todo_id: int, title: str | None = None, done: bool | None = None
             if done is not None:
                 todo.done = done
             return todo
-    raise HTTPException(status_code=404, detail="Todo not found")
 
-
-@app.delete("/todos/{todo_id}")
-def delete_todo(todo_id: int):
-    for i, todo in enumerate(todos):
-        if todo.id == todo_id:
-            return todos.pop(i)
     raise HTTPException(status_code=404, detail="Todo not found")
