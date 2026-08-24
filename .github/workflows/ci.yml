@@ -25,6 +25,17 @@ jobs:
           pip install -r requirements.txt
           pip install flake8 pytest
 
+      - name: Verify secret is available
+        env:
+          APP_SECRET: ${{ secrets.APP_SECRET }}
+        run: |
+          if [ -n "$APP_SECRET" ]; then
+            echo "APP_SECRET is configured"
+          else
+            echo "APP_SECRET is missing"
+            exit 1
+          fi
+
       - name: Lint with flake8
         run: |
           flake8 app/ --count --show-source --statistics
